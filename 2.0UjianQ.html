@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UjianQ – Bank Soal dari WhatsApp</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%2314b37d'/><text x='50' y='68' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='800'>Q</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<script>
+tailwind.config={theme:{extend:{fontFamily:{sans:['"Plus Jakarta Sans"','system-ui','sans-serif']},colors:{brand:{DEFAULT:'#14b37d',dark:'#0b6e4c',soft:'#e7f7f0',ink:'#0c2e22'},gold:{DEFAULT:'#e5b424',soft:'#fdf4d6'}}}}}
+</script>
+<style>
+body{background:#f3f8f5;color:#0c2e22}
+.pill{white-space:nowrap;padding:.5rem .9rem;border-radius:999px;font-size:.8rem;font-weight:600;background:#fff;border:1px solid #d5e8de;color:#2c5a48;transition:.15s}
+.pill.on{background:#14b37d;border-color:#14b37d;color:#fff}
+.scroll-x{display:flex;gap:.5rem;overflow-x:auto;padding-bottom:.25rem;scrollbar-width:none}
+.scroll-x::-webkit-scrollbar{display:none}
+.card{background:#fff;border:1px solid #dcebe3;border-radius:1.25rem}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:48px;padding:0 1.1rem;border-radius:.9rem;font-weight:700;font-size:.92rem;transition:.15s}
+.btn:active{transform:scale(.98)}
+.btn-p{background:#14b37d;color:#fff}.btn-p:hover{background:#0f9c6c}
+.btn-g{background:#e7f7f0;color:#0b6e4c}.btn-g:hover{background:#d3f0e4}
+.btn-o{background:#fff;border:1px solid #cfe3d9;color:#1f4d3b}
+.btn-d{background:#fff0ee;color:#c2410c}
+.sel,.inp{width:100%;min-height:44px;border:1px solid #cfe3d9;border-radius:.8rem;padding:.5rem .8rem;background:#fff;font-size:.9rem}
+.sel:focus,.inp:focus,button:focus-visible{outline:2px solid #14b37d;outline-offset:2px}
+.chip{display:inline-flex;align-items:center;justify-content:center;min-width:46px;height:34px;border-radius:.6rem;font-size:.78rem;font-weight:700;background:#f1f4f3;color:#94a3a0;border:1px dashed #cdd9d4}
+.chip.ok{background:#14b37d;color:#fff;border:1px solid #14b37d}
+.chip.na{background:transparent;border:none;color:#d3dcd8}
+.tab{flex:1;display:flex;align-items:center;justify-content:center;gap:.4rem;min-height:46px;border-radius:.9rem;font-weight:700;font-size:.88rem;color:#4b7563}
+.tab.on{background:#fff;color:#0b6e4c;box-shadow:0 1px 4px rgba(11,110,76,.15)}
+@media print{header,nav,.noprint{display:none!important}}
+</style>
+</head>
+<body class="font-sans min-h-screen">
+
+<header class="bg-brand-ink text-white">
+  <div class="max-w-4xl mx-auto px-4 pt-5 pb-16 flex items-center gap-3">
+    <svg width="46" height="46" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+      <path d="M8 14v34h24" stroke="#14b37d" stroke-width="4"/><path d="M14 10l14 3c4 1 6 3 7 6 1-3 3-5 7-6l14-3v28" stroke="#14b37d" stroke-width="4" stroke-linejoin="round"/><path d="M35 19v22" stroke="#14b37d" stroke-width="4"/>
+      <path d="M46 20l1.8 4.2L52 26l-4.2 1.8L46 32l-1.8-4.2L40 26l4.2-1.8z" fill="#e5b424"/>
+      <path d="M30 56l14-16h16" stroke="#e5b424" stroke-width="4"/><path d="M38 56h22M44 48h16" stroke="#14b37d" stroke-width="4"/>
+    </svg>
+    <div class="flex-1">
+      <h1 class="text-2xl font-extrabold tracking-tight">Ujian<span class="text-gold">Q</span></h1>
+      <p class="text-[13px] text-emerald-100/80">Soal dari WhatsApp, rapi per mapel dan kelas</p>
+    </div>
+    <button id="btnShare" class="btn bg-white/10 text-white hover:bg-white/20 !px-3" aria-label="Bagikan atau pindah data"><i data-lucide="share-2" class="w-5 h-5"></i><span class="hidden sm:inline">Pindah data</span></button>
+    <button id="btnSet" class="btn bg-white/10 text-white hover:bg-white/20 !px-3" aria-label="Pengaturan AI"><i data-lucide="settings" class="w-5 h-5"></i></button>
+  </div>
+</header>
+
+<main class="max-w-4xl mx-auto px-4 -mt-10 pb-24">
+  <nav class="bg-emerald-100/70 backdrop-blur p-1.5 rounded-2xl flex gap-1 mb-4 sticky top-2 z-20 border border-white/60 shadow-sm">
+    <button class="tab on" data-tab="add"><i data-lucide="clipboard-paste" class="w-4 h-4"></i>Tambah</button>
+    <button class="tab" data-tab="bank"><i data-lucide="library" class="w-4 h-4"></i>Bank soal <span id="cBank" class="text-xs bg-brand text-white rounded-full px-2 py-0.5">0</span></button>
+    <button class="tab" data-tab="rekap"><i data-lucide="list-checks" class="w-4 h-4"></i>Rekap <span id="cRekap" class="text-xs bg-gold text-brand-ink rounded-full px-2 py-0.5">0/80</span></button>
+  </nav>
+
+  <!-- TAB TAMBAH -->
+  <section id="tab-add">
+    <div class="card p-4 sm:p-5">
+      <label for="raw" class="font-bold text-lg block mb-1">Tempel soal dari WhatsApp</label>
+      <p class="text-sm text-slate-500 mb-3">Boleh berisi banyak mapel dan kelas sekaligus. Selama tiap soal diawali judul seperti <b>SOAL SIROH KELAS 3A</b>, UjianQ memisahkan dan mengelompokkannya otomatis. File Word (.docx) juga bisa diunggah.</p>
+      <textarea id="raw" rows="9" class="inp !rounded-2xl" placeholder="Contoh:&#10;SOAL FIQIH KELAS 3A&#10;1. Sebutkan rukun wudhu!&#10;2. Air yang suci dan mensucikan disebut ..."></textarea>
+      <div class="flex flex-col sm:flex-row gap-2 mt-3">
+        <button id="btnScan" class="btn btn-p flex-1"><i data-lucide="sparkles" class="w-5 h-5"></i>Periksa &amp; simpan soal</button>
+        <label class="btn btn-g cursor-pointer"><i data-lucide="file-up" class="w-5 h-5"></i>Unggah Word / teks<input id="fileIn" type="file" accept=".docx,.txt" multiple class="hidden"></label>
+        <button id="btnClear" class="btn btn-o"><i data-lucide="eraser" class="w-5 h-5"></i>Kosongkan</button>
+      </div>
+      <p id="aiNote" class="text-xs text-slate-500 mt-2"></p>
+    </div>
+    <div id="draft" class="mt-4 space-y-3"></div>
+  </section>
+
+  <!-- TAB BANK -->
+  <section id="tab-bank" class="hidden">
+    <input id="q" class="inp mb-3" type="search" placeholder="Cari isi soal…">
+    <div id="fMapel" class="scroll-x mb-2"></div>
+    <div id="fKelas" class="scroll-x mb-4"></div>
+    <div id="list" class="space-y-3"></div>
+  </section>
+
+  <!-- TAB REKAP -->
+  <section id="tab-rekap" class="hidden">
+    <div class="card p-4 sm:p-5 mb-4">
+      <div class="flex items-end justify-between mb-2"><div><p class="text-sm text-slate-500">Progres paket soal</p><p class="text-3xl font-extrabold"><span id="pNum">0</span><span class="text-slate-400 text-xl">/80</span></p></div><p id="pPct" class="font-bold text-brand-dark">0%</p></div>
+      <div class="h-3 rounded-full bg-brand-soft overflow-hidden"><div id="pBar" class="h-full bg-brand rounded-full transition-all" style="width:0"></div></div>
+      <button id="btnWA" class="btn btn-p w-full mt-4"><i data-lucide="message-circle" class="w-5 h-5"></i>Salin teks rekap WhatsApp</button>
+    </div>
+    <div id="rekap" class="space-y-3"></div>
+  </section>
+</main>
+
+<!-- MODAL -->
+<div id="modal" class="fixed inset-0 z-50 hidden bg-black/50 items-end sm:items-center justify-center p-0 sm:p-4">
+  <div id="modalBox" class="bg-white w-full sm:max-w-lg rounded-t-3xl sm:rounded-3xl p-5 max-h-[92vh] overflow-y-auto"></div>
+</div>
+<div id="toast" class="fixed left-1/2 -translate-x-1/2 bottom-6 z-[60] bg-brand-ink text-white text-sm font-semibold px-4 py-3 rounded-xl shadow-lg hidden"></div>
+
+<script>
+const SUBJ=[
+{n:'FIQIH',min:1,kw:['shalat','sholat','salat','wudhu','wudu','najis','puasa','zakat','haji','tayammum','thaharah','hadats','mandi wajib','azan','adzan','sujud','ruku','istinja','fiqih','fikih','rukun shalat']},
+{n:'AQIDAH',min:1,kw:['iman','malaikat','kitab allah','rukun iman','rukun islam','rasul','takdir','qada','qadar','akhirat','tauhid','asmaul husna','akidah','aqidah','mengimani']},
+{n:'AKHLAQ',min:1,kw:['adab','akhlak','akhlaq','sopan','orang tua','jujur','sabar','sombong','hormat','santun','tolong menolong','berbakti','pemaaf','rendah hati']},
+{n:'SIROH',min:1,kw:['nabi','sahabat','hijrah','mekah','makkah','madinah','siroh','sirah','perang badar','perang uhud','khulafaur','abu bakar','umar bin','utsman','ali bin','quraisy','khadijah','abdullah','halimah']},
+{n:'BAHASA ARAB',min:1,kw:['bahasa arab','mufradat','kosakata','mufrodat','artinya dalam bahasa arab','dalam bahasa arab','nahwu','shorof','kalimat arab','tarjamah']},
+{n:'MATEMATIKA',min:1,kw:['hitung','jumlah','tambah','kurang','kali','bagi','pecahan','bilangan','geometri','luas','keliling','matematika','persegi','segitiga','hasil dari','volume','pembulatan','faktor']},
+{n:'BAHASA INDONESIA',min:1,kw:['kalimat','paragraf','kata baku','sinonim','antonim','puisi','bacaan','ejaan','huruf kapital','tanda baca','imbuhan','bahasa indonesia','pantun','dongeng','kata depan','ide pokok','tema']},
+{n:'PEND. PANCASILA',min:1,kw:['pancasila','sila ke','sila','garuda','bhinneka','gotong royong','musyawarah','negara','bendera','norma','hak dan kewajiban','uud','nkri','lambang negara','kemerdekaan','proklamasi']},
+{n:'IPAS',min:3,kw:['tumbuhan','hewan','makhluk hidup','planet','matahari','energi','bumi','gaya','cahaya','rantai makanan','ekosistem','daur air','benda','wilayah','ipas','ipa ','ips ','fotosintesis','perubahan wujud','suhu','magnet','listrik']},
+{n:'BAHASA INGGRIS',min:3,kw:['english','bahasa inggris','translate','vocabulary','what is','what color','how many','where is','i am','my name','this is','that is','they are','he is','she is','a/an','complete the','choose the']},
+{n:'PENJASKES / TAHSIN',min:1,kw:['tajwid','tajwit','makhraj','tahsin','senam','lari','olahraga','lompat','bola','ikhfa','idgham','idzhar','iqlab','qalqalah','mad ','jasmani','permainan','renang','penjas','penjaskes','nun mati','mim mati']},
+{n:'PRAKARYA',min:1,kw:['prakarya','kerajinan','gunting','tempel','lipat','origami','kolase','karya','bahan','menggambar','mewarnai','anyaman','tanah liat','kardus','membuat']},
+{n:'HADITS (LISAN)',min:1,kw:['hadits','hadist','hadis','riwayat','bukhari','muslim','sabda','rasulullah bersabda','bersabda','hafalan hadits']},
+{n:'DOA (LISAN)',min:1,kw:['doa','do\'a','du\'a','berdoa','bacaan doa','sebelum makan','sesudah makan','sebelum tidur','bangun tidur','masuk masjid','naik kendaraan','allahumma','masuk kamar mandi','hafalan doa']}
+];
+const SN=SUBJ.map(s=>s.n), ROM={i:1,ii:2,iii:3,iv:4,v:5,vi:6};
+const classesOf=m=>{const s=SUBJ.find(x=>x.n===m);const a=[];for(let i=s?s.min:1;i<=6;i++)a.push(i+'-A');return a};
+const TOTAL=SUBJ.reduce((t,s)=>t+classesOf(s.n).length,0);
+const KEY='ujianq_v1', KEYG='ujianq_gemini';
+let db=[],draft=[],state={tab:'add',m:'Semua',k:'Semua',q:''};
+try{db=JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){db=[]}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(db))}catch(e){toast('Penyimpanan penuh atau diblokir browser')}};
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const $=id=>document.getElementById(id);
+const icons=()=>lucide.createIcons();
+function toast(t){const e=$('toast');e.textContent=t;e.classList.remove('hidden');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.add('hidden'),2200)}
+async function copy(t){try{await navigator.clipboard.writeText(t)}catch(e){const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();document.execCommand('copy');a.remove()}toast('Tersalin ✓')}
+
+/* ===== Deteksi ===== */
+function detectKelas(t){
+  let m=t.match(/\b(?:kelas|kls|class)\s*[:.\-]?\s*(\d|vi|iv|v|iii|ii|i)\b\s*[-\s]?\s*a?\b/i);
+  if(m){const v=m[1].toLowerCase();const n=ROM[v]||parseInt(v);if(n>=1&&n<=6)return n+'-A'}
+  m=t.match(/\b([1-6])\s*-?\s*a\b/i);if(m)return m[1]+'-A';
+  return ''
+}
+function detectMapel(t){
+  const l=' '+t.toLowerCase()+' ', head=l.slice(0,220), sc={};
+  SUBJ.forEach(s=>{
+    let p=0;
+    s.kw.forEach(k=>{let i=0,c=0;while(c<4&&(i=l.indexOf(k,i))>-1){c++;i+=k.length}p+=c*(k.length>5?2:1)});
+    if(head.includes(s.n.toLowerCase().replace(/ \(lisan\)/,'').replace('pend. ','')))p+=12;
+    sc[s.n]=p});
+  const ar=(t.match(/[\u0600-\u06FF]/g)||[]).length, lat=(t.match(/[a-zA-Z]/g)||[]).length;
+  if(ar>15&&ar>lat*.3){sc['BAHASA ARAB']+=14;if(/hadits|hadist|hadis|bersabda/i.test(t))sc['HADITS (LISAN)']+=10;if(/doa|do'a|allahumma/i.test(t))sc['DOA (LISAN)']+=10}
+  if(/\d+\s*[+\-×x÷:*\/]\s*\d+\s*=/.test(t))sc['MATEMATIKA']+=12;
+  const en=(l.match(/\b(the|is|are|my|this|that|what|where|how|you|he|she|they|we|it)\b/g)||[]).length;
+  if(en>=8)sc['BAHASA INGGRIS']+=en;
+  if(/\blisan\b/.test(l)){sc['HADITS (LISAN)']*=1.5;sc['DOA (LISAN)']*=1.5}
+  let best='',b=0;SN.forEach(n=>{if(sc[n]>b){b=sc[n];best=n}});
+  return best
+}
+async function aiDetect(t,key){
+  const prompt=`Klasifikasikan naskah soal ujian SD Islam berikut. Pilih mapel PERSIS salah satu dari: ${SN.join(' | ')}. Kelas format "1-A" sampai "6-A" atau null jika tidak jelas. Balas JSON saja: {"mapel":"...","kelas":"..."}\n\nNaskah:\n${t.slice(0,2500)}`;
+  const r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+encodeURIComponent(key),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{responseMimeType:'application/json',temperature:0}})});
+  if(!r.ok)throw new Error(r.status);
+  const j=await r.json();const o=JSON.parse(j.candidates[0].content.parts[0].text);
+  return{mapel:SN.includes(o.mapel)?o.mapel:'',kelas:/^[1-6]-A$/.test(o.kelas||'')?o.kelas:''}
+}
+
+/* ===== Tab ===== */
+function setTab(t){
+  state.tab=t;
+  ['add','bank','rekap'].forEach(x=>{$('tab-'+x).classList.toggle('hidden',x!==t)});
+  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));
+  if(t==='bank')renderBank();if(t==='rekap')renderRekap();
+  window.scrollTo({top:0,behavior:'smooth'})
+}
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
+
+$('btnClear').onclick=()=>{$('raw').value='';draft=[];renderDraft()};
+/* ===== Deteksi dari judul (multi-mapel sekali tempel) ===== */
+const ALIAS=[
+['FIQIH',['fiqih','fikih','fiqh']],['AQIDAH',['aqidah','akidah','aqidah']],['AKHLAQ',['akhlaq','akhlak','adab']],
+['SIROH',['siroh','sirah','sejarah nabi']],['BAHASA ARAB',['bahasa arab','bhs arab','b arab','arab']],
+['MATEMATIKA',['matematika','matematik','mtk','math','berhitung']],
+['BAHASA INDONESIA',['bahasa indonesia','bhs indonesia','b indonesia','bahasa indo','b indo']],
+['PEND. PANCASILA',['pendidikan pancasila','pend pancasila','pancasila','ppkn','pkn']],
+['IPAS',['ipas','ilmu pengetahuan alam dan sosial']],['BAHASA INGGRIS',['bahasa inggris','bhs inggris','b inggris','b ing','english']],
+['PENJASKES / TAHSIN',['penjaskes','penjas','pjok','tahsin','tajwid']],['PRAKARYA',['prakarya']],
+['HADITS (LISAN)',['hadits','hadist','hadis']],['DOA (LISAN)',['doa']]];
+const AL=[];ALIAS.forEach(([n,a])=>a.forEach(x=>AL.push([x,n,new RegExp('(^|[^a-z])'+x+'(?![a-z])')])));AL.sort((a,b)=>b[0].length-a[0].length);
+const CLSX=/\b(?:kelas|kls|class)\s*[:.\-]?\s*(?:\d|vi|iv|v|iii|ii|i)\b\s*[-\s]?\s*a?\b/g;
+const DECOR=/\b(soal|ujian|mapel|mata|pelajaran|kelas|kls|class|uas|pas|pts|sts|uts|ulangan|semester|ganjil|genap|tahun|ajaran|ta|lisan|sd|sdit|paket|naskah|latihan|tugas|harian|ke|dan|\d+|[ivx]+|a)\b/g;
+const cleanLine=s=>s.replace(/[\u200e\u200f]/g,'').replace(/^\s*\[?\d{1,2}[\/.]\d{1,2}[\/.]\d{2,4},?\s+\d{1,2}[.:]\d{2}(?::\d{2})?(?:\s?[APap]\.?[Mm]\.?)?\]?\s*[-–]?\s*(?:[^:\n]{1,40}:\s*)?/,'');
+const classOnly=s=>{const t=s.replace(/[*_~`]/g,'').trim();return t.length>0&&t.length<=30&&/^\W*(?:(?:kelas|kls|class)\s*[:.\-]?\s*(?:\d|[ivx]+)\s*[-\s]?\s*a?|[1-6]\s*-?\s*a)\W*$/i.test(t)&&!!detectKelas(t)};
+function headerOf(raw){
+  const s=raw.replace(/[*_~`#>|]/g,' ').replace(/\s+/g,' ').trim();
+  if(!s||s.length>95||/^\(?\d{1,3}\s*[.)\-]\s/.test(s)||/^[a-eA-E]\s*[.)]\s/.test(s)||/\?\s*$/.test(s))return null;
+  const l=' '+s.toLowerCase().replace(/['’`]/g,'').replace(/\./g,' ').replace(/\s+/g,' ')+' ';
+  let mapel='',rest=l;
+  for(const [a,n,re] of AL){if(re.test(l)){mapel=n;rest=l.replace(re,' ');break}}
+  if(!mapel)return null;
+  const kelas=detectKelas(s);
+  const kw=/\b(soal|ujian|mapel|pelajaran|kelas|kls|uas|pas|pts|sts|uts|ulangan|naskah|paket)\b/.test(l);
+  const rem=rest.replace(CLSX,' ').replace(DECOR,' ').replace(/[^a-z]/g,'').length;
+  return (kw||kelas||rem===0)?{mapel,kelas}:null
+}
+function splitByHeader(text){
+  const lines=text.split(/\r?\n/).map(cleanLine),segs=[];let cur=null,pre=[];
+  for(let i=0;i<lines.length;i++){
+    const ln=lines[i],h=headerOf(ln);
+    if(!h){(cur?cur.lines:pre).push(ln);continue}
+    let kelas=h.kelas;const buf=cur?cur.lines:pre;
+    if(!kelas){for(let j=i+1,c=0;j<lines.length&&c<3;j++){if(!lines[j].trim())continue;c++;if(classOnly(lines[j])){kelas=detectKelas(lines[j]);lines[j]='';break}}}
+    if(!kelas){let k=buf.length-1;while(k>=0&&!buf[k].trim())k--;if(k>=0&&classOnly(buf[k])){kelas=detectKelas(buf[k]);buf.splice(k,1)}}
+    cur={mapel:h.mapel,kelas:kelas||'',lines:[ln],src:'Judul'};segs.push(cur)
+  }
+  const fin=a=>a.join('\n').replace(/\n{3,}/g,'\n\n').trim();
+  const out=[];
+  const p=fin(pre);if(p.length>=10)out.push({mapel:'',kelas:'',text:p,src:'Kata kunci'});
+  segs.forEach(s=>{const t=fin(s.lines);if(t.length-s.lines[0].length>=3){if(!s.kelas)s.kelas=detectKelas(t.slice(0,500));out.push({mapel:s.mapel,kelas:s.kelas,text:t,src:'Judul'})}});
+  const m=[];out.forEach(s=>{const q=m[m.length-1];if(q&&s.src==='Judul'&&q.src==='Judul'&&s.mapel===q.mapel&&s.kelas===q.kelas)q.text+='\n\n'+s.text;else m.push(s)});
+  return m
+}
+
+/* ===== Periksa ===== */
+async function runScan(raw){
+  const key=localStorage.getItem(KEYG)||'',btn=$('btnScan');
+  btn.disabled=true;btn.textContent='Memeriksa…';
+  const parts=raw.split(/\n\s*(?:[-=_*#]{3,})\s*\n/).map(s=>s.trim()).filter(Boolean);
+  let segs=[];parts.forEach(p=>segs.push(...splitByHeader(p)));
+  draft=[];let aiFail=false;
+  for(const s of segs){
+    let {mapel,kelas,src}=s;
+    if(!mapel)mapel=detectMapel(s.text);
+    if(!kelas)kelas=detectKelas(s.text);
+    if(key&&(!mapel||!kelas)){try{const a=await aiDetect(s.text,key);if(!mapel&&a.mapel){mapel=a.mapel;src='AI Gemini'}if(!kelas&&a.kelas)kelas=a.kelas}catch(e){aiFail=true}}
+    if(mapel&&kelas&&!classesOf(mapel).includes(kelas))kelas='';
+    draft.push({text:s.text,mapel,kelas,src})
+  }
+  btn.disabled=false;btn.innerHTML='<i data-lucide="sparkles" class="w-5 h-5"></i>Periksa &amp; simpan soal';
+  $('aiNote').textContent=aiFail?'AI tidak bisa dihubungi (cek API Key atau internet). Memakai deteksi judul dan kata kunci.':'';
+  if(!draft.length)toast('Tidak ada soal yang terbaca');
+  renderDraft();icons();if(draft.length)$('draft').scrollIntoView({behavior:'smooth'})
+}
+$('btnScan').onclick=()=>{const raw=$('raw').value.trim();if(!raw){toast('Tempel soal atau unggah file dulu');return}runScan(raw)};
+$('fileIn').onchange=async e=>{
+  const files=[...e.target.files],all=[];
+  for(const f of files){
+    try{
+      let t='';
+      if(/\.docx$/i.test(f.name)){if(!window.mammoth)throw 0;t=(await mammoth.extractRawText({arrayBuffer:await f.arrayBuffer()})).value}
+      else if(/\.(txt|md|csv)$/i.test(f.name))t=await f.text();
+      else{toast(f.name+': gunakan .docx atau .txt (simpan ulang file .doc sebagai .docx)');continue}
+      t=t.replace(/\n{3,}/g,'\n\n').trim();
+      if(!splitByHeader(t).some(s=>s.src==='Judul')){const nm=f.name.replace(/\.[^.]+$/,'').replace(/_/g,' ');if(headerOf(nm))t=nm+'\n'+t}
+      all.push(t)
+    }catch(err){toast('Gagal membaca '+f.name)}
+  }
+  e.target.value='';
+  if(all.length){const cur=$('raw').value.trim();$('raw').value=(cur?cur+'\n\n':'')+all.join('\n\n');await runScan($('raw').value.trim())}
+};
+function renderDraft(){
+  const el=$('draft');
+  if(!draft.length){el.innerHTML='';return}
+  el.innerHTML=`<div class="flex items-center justify-between px-1"><h2 class="font-bold">${draft.length} paket terdeteksi</h2><span class="text-xs text-slate-500">${draft.filter(d=>d.mapel&&d.kelas).length} lengkap, ${draft.filter(d=>!d.mapel||!d.kelas).length} perlu dicek</span></div>`+
+  draft.map((d,i)=>`<div class="card p-4 border-l-4 ${d.mapel&&d.kelas?'!border-l-brand':'!border-l-gold'}">
+    <p class="text-sm text-slate-600 line-clamp-3 whitespace-pre-line mb-3">${esc(d.text.slice(0,260))}</p>
+    <div class="grid grid-cols-2 gap-2">
+      <select class="sel" data-i="${i}" data-f="mapel" aria-label="Mata pelajaran"><option value="">Pilih mapel</option>${SN.map(n=>`<option ${n===d.mapel?'selected':''}>${n}</option>`).join('')}</select>
+      <select class="sel" data-i="${i}" data-f="kelas" aria-label="Kelas"><option value="">Pilih kelas</option>${(d.mapel?classesOf(d.mapel):['1-A','2-A','3-A','4-A','5-A','6-A']).map(k=>`<option ${k===d.kelas?'selected':''}>${k}</option>`).join('')}</select>
+    </div>
+    <div class="flex items-center justify-between mt-2"><span class="text-xs text-slate-500 flex items-center gap-1"><i data-lucide="${d.src==='AI Gemini'?'bot':d.src==='Judul'?'heading':'zap'}" class="w-3.5 h-3.5"></i>${d.src==='Judul'?'Dari judul soal':d.src}${d.mapel&&d.kelas&&db.some(r=>r.mapel===d.mapel&&r.kelas===d.kelas)?' · sudah ada soal, akan ditambah':''}</span>
+    <button class="text-xs font-bold text-orange-700 py-2" data-rm="${i}">Buang</button></div></div>`).join('')+
+  `<button id="btnSaveAll" class="btn btn-p w-full"><i data-lucide="save" class="w-5 h-5"></i>Simpan ${draft.length} paket ke bank soal</button>`;
+  el.querySelectorAll('select').forEach(s=>s.onchange=()=>{const d=draft[s.dataset.i];d[s.dataset.f]=s.value;if(s.dataset.f==='mapel'&&d.kelas&&!classesOf(d.mapel||'FIQIH').includes(d.kelas))d.kelas='';renderDraft()});
+  el.querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{draft.splice(b.dataset.rm,1);renderDraft()});
+  $('btnSaveAll').onclick=()=>{
+    if(draft.some(d=>!d.mapel||!d.kelas)){toast('Lengkapi mapel dan kelas yang masih kosong');return}
+    draft.forEach(d=>db.unshift({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),mapel:d.mapel,kelas:d.kelas,text:d.text,ts:Date.now()}));
+    save();toast(draft.length+' paket tersimpan');draft=[];$('raw').value='';renderDraft();updateCounts();setTab('bank')
+  };icons()
+}
+
+/* ===== Bank ===== */
+function renderBank(){
+  const pills=(arr,cur,k)=>arr.map(v=>`<button class="pill ${v===cur?'on':''}" data-${k}="${v}">${v}</button>`).join('');
+  $('fMapel').innerHTML=pills(['Semua',...SN],state.m,'m');
+  $('fKelas').innerHTML=pills(['Semua','1-A','2-A','3-A','4-A','5-A','6-A'],state.k,'k');
+  const q=state.q.toLowerCase();
+  const rows=db.filter(r=>(state.m==='Semua'||r.mapel===state.m)&&(state.k==='Semua'||r.kelas===state.k)&&(!q||r.text.toLowerCase().includes(q)));
+  $('list').innerHTML=rows.length?rows.map(r=>`<article class="card p-4">
+    <div class="flex flex-wrap gap-2 mb-3"><span class="text-xs font-bold bg-brand-soft text-brand-dark px-2.5 py-1 rounded-full">${r.mapel}</span><span class="text-xs font-bold bg-gold-soft text-yellow-800 px-2.5 py-1 rounded-full">Kelas ${r.kelas}</span></div>
+    <div class="text-[15px] leading-relaxed whitespace-pre-wrap break-words max-w-[70ch]">${esc(r.text)}</div>
+    <div class="grid grid-cols-3 gap-2 mt-4">
+      <button class="btn btn-p !min-h-[44px] !px-2" data-cp="${r.id}"><i data-lucide="copy" class="w-4 h-4"></i>Salin soal</button>
+      <button class="btn btn-g !min-h-[44px] !px-2" data-ed="${r.id}"><i data-lucide="pencil" class="w-4 h-4"></i>Edit</button>
+      <button class="btn btn-d !min-h-[44px] !px-2" data-dl="${r.id}"><i data-lucide="trash-2" class="w-4 h-4"></i>Hapus</button>
+    </div></article>`).join(''):`<div class="card p-8 text-center text-slate-500"><i data-lucide="inbox" class="w-10 h-10 mx-auto mb-2 text-brand"></i><p class="font-semibold text-brand-ink">Belum ada soal di sini</p><p class="text-sm">Tempel soal dari WhatsApp di tab Tambah.</p></div>`;
+  icons()
+}
+$('q').oninput=e=>{state.q=e.target.value;renderBank()};
+$('fMapel').onclick=e=>{const b=e.target.closest('[data-m]');if(b){state.m=b.dataset.m;renderBank()}};
+$('fKelas').onclick=e=>{const b=e.target.closest('[data-k]');if(b){state.k=b.dataset.k;renderBank()}};
+$('list').onclick=e=>{
+  const g=a=>e.target.closest('['+a+']'),f=id=>db.find(r=>r.id===id);
+  let b;
+  if(b=g('data-cp'))copy(f(b.dataset.cp).text);
+  else if(b=g('data-dl')){if(confirm('Hapus soal ini?')){db=db.filter(r=>r.id!==b.dataset.dl);save();updateCounts();renderBank()}}
+  else if(b=g('data-ed'))openEdit(f(b.dataset.ed))
+};
+
+/* ===== Modal ===== */
+function openModal(h){$('modalBox').innerHTML=h;$('modal').classList.remove('hidden');$('modal').classList.add('flex');icons()}
+function closeModal(){$('modal').classList.add('hidden');$('modal').classList.remove('flex')}
+$('modal').onclick=e=>{if(e.target.id==='modal'||e.target.closest('[data-close]'))closeModal()};
+function openEdit(r){
+  const mk=()=>classesOf($('eM').value).map(k=>`<option ${k===r.kelas?'selected':''}>${k}</option>`).join('');
+  openModal(`<h2 class="font-extrabold text-lg mb-3">Edit soal</h2>
+  <div class="grid grid-cols-2 gap-2 mb-2"><select id="eM" class="sel">${SN.map(n=>`<option ${n===r.mapel?'selected':''}>${n}</option>`).join('')}</select><select id="eK" class="sel"></select></div>
+  <textarea id="eT" rows="10" class="inp !rounded-2xl">${esc(r.text)}</textarea>
+  <div class="grid grid-cols-2 gap-2 mt-3"><button class="btn btn-o" data-close>Batal</button><button id="eS" class="btn btn-p">Simpan</button></div>`);
+  $('eK').innerHTML=mk();$('eM').onchange=()=>{r.kelas=$('eK').value;$('eK').innerHTML=mk()};
+  $('eS').onclick=()=>{r.mapel=$('eM').value;r.kelas=$('eK').value;r.text=$('eT').value.trim();save();closeModal();updateCounts();renderBank();toast('Perubahan disimpan')}
+}
+
+/* ===== Rekap ===== */
+const filled=()=>new Set(db.map(r=>r.mapel+'|'+r.kelas));
+function done(){const f=filled();let n=0;SUBJ.forEach(s=>classesOf(s.n).forEach(k=>{if(f.has(s.n+'|'+k))n++}));return n}
+function updateCounts(){const n=done();$('cBank').textContent=db.length;$('cRekap').textContent=n+'/'+TOTAL}
+function renderRekap(){
+  const f=filled(),n=done();
+  $('pNum').textContent=n;$('pPct').textContent=Math.round(n/TOTAL*100)+'%';$('pBar').style.width=(n/TOTAL*100)+'%';
+  $('rekap').innerHTML=SUBJ.map(s=>{
+    const ks=classesOf(s.n),c=ks.filter(k=>f.has(s.n+'|'+k)).length;
+    return `<div class="card p-4"><div class="flex items-center justify-between mb-3"><h3 class="font-bold flex items-center gap-2">${c===ks.length?'<i data-lucide="circle-check" class="w-5 h-5 text-brand"></i>':'<i data-lucide="circle" class="w-5 h-5 text-slate-300"></i>'}${s.n}</h3><span class="text-sm font-bold ${c===ks.length?'text-brand-dark':'text-slate-400'}">${c}/${ks.length}</span></div>
+    <div class="flex flex-wrap gap-1.5">${[1,2,3,4,5,6].map(i=>{const k=i+'-A';return ks.includes(k)?`<button class="chip ${f.has(s.n+'|'+k)?'ok':''}" data-go="${s.n}|${k}">${f.has(s.n+'|'+k)?'✓ ':''}${k}</button>`:`<span class="chip na">—</span>`}).join('')}</div></div>`}).join('');
+  icons()
+}
+$('rekap').onclick=e=>{const b=e.target.closest('[data-go]');if(!b)return;const[m,k]=b.dataset.go.split('|');if(!filled().has(b.dataset.go)){toast(m+' '+k+' belum ada soal');return}state.m=m;state.k=k;setTab('bank')};
+$('btnWA').onclick=()=>{
+  const f=filled(),n=done(),d=new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});
+  let t=`*REKAP SOAL UJIAN*\n${d}\nTerkumpul: *${n}/${TOTAL}* paket (${Math.round(n/TOTAL*100)}%)\n\n`;
+  SUBJ.forEach(s=>{const ks=classesOf(s.n),miss=ks.filter(k=>!f.has(s.n+'|'+k));t+=miss.length?`❌ ${s.n} (${ks.length-miss.length}/${ks.length}) – belum: ${miss.join(', ')}\n`:`✅ ${s.n} (${ks.length}/${ks.length})\n`});
+  copy(t+'\n_Dibuat dengan UjianQ_')
+};
+
+/* ===== Pindah data ===== */
+$('btnShare').onclick=()=>{
+  openModal(`<h2 class="font-extrabold text-lg">Bagikan / pindah data</h2><p class="text-sm text-slate-500 mb-3">${db.length} paket soal siap dibagikan.</p>
+  <div class="space-y-2">
+    <button id="xCopy" class="btn btn-p w-full"><i data-lucide="copy" class="w-5 h-5"></i>Salin kode (tempel ke WhatsApp)</button>
+    <button id="xJson" class="btn btn-g w-full"><i data-lucide="file-json" class="w-5 h-5"></i>Unduh cadangan (.json)</button>
+    <button id="xDoc" class="btn btn-g w-full"><i data-lucide="file-text" class="w-5 h-5"></i>Unduh semua soal siap cetak (.doc)</button>
+  </div>
+  <div class="border-t my-4"></div><h3 class="font-bold mb-2">Impor data</h3>
+  <textarea id="iT" rows="4" class="inp !rounded-2xl" placeholder="Tempel kode UjianQ di sini"></textarea>
+  <div class="grid grid-cols-2 gap-2 mt-2"><label class="btn btn-o cursor-pointer"><i data-lucide="upload" class="w-4 h-4"></i>Pilih file<input id="iF" type="file" accept=".json,.txt" class="hidden"></label><button id="iGo" class="btn btn-p">Impor</button></div>
+  <button class="btn btn-o w-full mt-3" data-close>Tutup</button>`);
+  const code=()=>'UJIANQ:'+btoa(unescape(encodeURIComponent(JSON.stringify(db))));
+  const dl=(name,mime,txt)=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type:mime}));a.download=name;a.click()};
+  $('xCopy').onclick=()=>copy(code());
+  $('xJson').onclick=()=>dl('ujianq-cadangan.json','application/json',JSON.stringify(db,null,1));
+  $('xDoc').onclick=()=>{
+    let h='<html><head><meta charset="utf-8"><title>Soal UjianQ</title></head><body style="font-family:Calibri,Arial">';
+    SN.forEach(m=>classesOf(m).forEach(k=>db.filter(r=>r.mapel===m&&r.kelas===k).forEach(r=>{h+=`<h2>${esc(m)} – Kelas ${k}</h2><p>${esc(r.text).replace(/\n/g,'<br>')}</p><br style="page-break-after:always">`})));
+    dl('soal-ujianq.doc','application/msword',h+'</body></html>')
+  };
+  const imp=txt=>{
+    try{txt=txt.trim();if(txt.startsWith('UJIANQ:'))txt=decodeURIComponent(escape(atob(txt.slice(7))));
+    const a=JSON.parse(txt);let n=0;const ids=new Set(db.map(r=>r.id));
+    a.forEach(r=>{if(r&&r.id&&SN.includes(r.mapel)&&r.text&&!ids.has(r.id)){db.push({id:r.id,mapel:r.mapel,kelas:r.kelas,text:r.text,ts:r.ts||Date.now()});n++}});
+    db.sort((x,y)=>y.ts-x.ts);save();updateCounts();closeModal();toast(n+' paket baru diimpor')}catch(e){toast('Kode tidak valid')}
+  };
+  $('iGo').onclick=()=>imp($('iT').value);
+  $('iF').onchange=e=>{const f=e.target.files[0];if(f)f.text().then(imp)}
+};
+
+/* ===== Pengaturan AI ===== */
+$('btnSet').onclick=()=>{
+  openModal(`<h2 class="font-extrabold text-lg">Pengaturan AI (opsional)</h2>
+  <p class="text-sm text-slate-500 my-3">Tanpa API Key, UjianQ tetap mendeteksi mapel dan kelas lewat kata kunci, bahkan tanpa internet. Isi Gemini API Key bila ingin hasil lebih akurat. Key hanya disimpan di perangkat ini.</p>
+  <input id="gK" type="password" class="inp" placeholder="Gemini API Key" value="${esc(localStorage.getItem(KEYG)||'')}">
+  <div class="grid grid-cols-2 gap-2 mt-3"><button class="btn btn-o" data-close>Batal</button><button id="gS" class="btn btn-p">Simpan</button></div>`);
+  $('gS').onclick=()=>{const v=$('gK').value.trim();v?localStorage.setItem(KEYG,v):localStorage.removeItem(KEYG);closeModal();toast(v?'AI Gemini aktif':'AI dimatikan');initNote()}
+};
+function initNote(){$('aiNote').textContent=localStorage.getItem(KEYG)?'Mode AI Gemini aktif, dengan cadangan deteksi kata kunci.':''}
+
+updateCounts();initNote();icons();
+</script>
+</body>
+</html>
